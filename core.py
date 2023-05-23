@@ -116,7 +116,7 @@ Q: {question}
 """
 
 
-def CoT(llm, problem, n=1):
+def CoT(generator, problem, temperature=0.8, top_p=0.95, n=1):
     prompt = CoT_template.format(question=problem.passage + ' ' + problem.question)
 
     # print("problem:")
@@ -128,11 +128,6 @@ def CoT(llm, problem, n=1):
             [prompt], max_gen_len=256, temperature=temperature, top_p=top_p
         )
 
-        # for debugging---
-        for result in results:
-            print(result)
-            print("\n==================================\n")
-        # ---
         output = results[0]
         # print("output:")
         # print(output)
@@ -173,7 +168,7 @@ def safe_execute(code_string: str, keys=None):
     return ans
 
 
-def PoT(llm, problem, n=1):
+def PoT(generator, problem, temperature=0.8, top_p=0.95, n=1):
     prompt = PoT_template.format(passage=problem.passage, question=problem.question)
 
     # print("problem:")
@@ -184,11 +179,6 @@ def PoT(llm, problem, n=1):
         results = generator.generate(
             [prompt], max_gen_len=256, temperature=temperature, top_p=top_p
         )
-        # for debugging---
-        for result in results:
-            print(result)
-            print("\n==================================\n")
-        # ---
         output = results[0]
         ans = safe_execute(output) #TODO should check output
         if ans:
@@ -207,7 +197,7 @@ def PoT(llm, problem, n=1):
     return ans
 
 
-def PhP(llm, problem, prompt_option="PhP"):
+def PhP(generator, problem, temperature=0.8, top_p=0.95, prompt_option="PhP"):
 
     if prompt_option == "PhP":
         template = PhP_template
@@ -226,11 +216,6 @@ def PhP(llm, problem, prompt_option="PhP"):
         results = generator.generate(
             [prompt], max_gen_len=256, temperature=temperature, top_p=top_p
         )
-        # for debugging---
-        for result in results:
-            print(result)
-            print("\n==================================\n")
-        # ---
         output = results[0]
 
         nums_in_output = re.findall(r"\d+\.\d+|\d+", output)
